@@ -14,6 +14,15 @@ namespace LigaHowden
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddScoped<HttpClient>(sp =>
+            {
+                // Configure o HttpClient conforme necessário
+                return new HttpClient
+                {
+                    BaseAddress = new Uri("https://api.ligas.edsonluizcandido.com.br/")
+                    // Aqui você pode adicionar cabeçalhos padrão, configurar o manipulador de mensagens, etc.
+                };
+            });
 
             var app = builder.Build();
 

@@ -1,26 +1,46 @@
 @page "/login"
+@inject HttpClient Http
+@inject NavigationManager Navigation
 
 <h1>Login</h1>
 <form>
   <!-- Email input -->
   <div data-mdb-input-init class="form-outline mb-4">
-    <input type="email" id="form2Example1" class="form-control" />
+    <input type="email" id="form2Example1" class="form-control" @bind="identity"/>
     <label class="form-label" for="form2Example1">Email address</label>
   </div>
 
   <!-- Password input -->
   <div data-mdb-input-init class="form-outline mb-4">
-    <input type="password" id="form2Example2" class="form-control" />
+    <input type="password" id="form2Example2" class="form-control" @bind="password"/>
     <label class="form-label" for="form2Example2">Password</label>
   </div>
 
   <!-- Submit button -->
-  <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
+    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4" @onclick="SignIn">Sign in</button>
 
 </form>
 
 @code{
     //ao clickar no botão enviar os valores identity e password para a user https://api.ligas.edsonluizcandido.com.br//api/collections/users/auth-with-password usando o post
     //show a modal value 
-    
+    private string identity;
+    private string password;
+
+    private async Task SignIn()
+    {
+        var userCredentials = new { identity = this.identity, password = this.password };
+        var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", userCredentials);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
+            Navigation.NavigateTo("/pagina-de-sucesso");
+        }
+        else
+        {
+            // Mostrar uma mensagem de erro
+            Console.WriteLine("Erro ao fazer login. Por favor, tente novamente.");
+        }
+    }
 }
