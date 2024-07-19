@@ -1,6 +1,8 @@
 @page "/login"
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@using PocketBaseClient
+@using pocketbase_csharp_sdk
 
 <h1>Login</h1>
 <form>
@@ -29,6 +31,10 @@
 
     private async Task SignIn()
     {
+        var pb = new PocketBase("https://api.ligas.edsonluizcandido.com.br");
+
+        var authData = await pb.User.AuthenticateWithPassword(this.identity, this.password);
+
         var userCredentials = new { identity = this.identity, password = this.password };
         var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", userCredentials);
 

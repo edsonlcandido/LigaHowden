@@ -8,4 +8,8 @@
     <DockerfileContext>.\</DockerfileContext>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PocketBaseClient" Version="0.6.1" />
+  </ItemGroup>
+
 </Project>
