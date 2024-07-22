@@ -36,6 +36,8 @@
         var authData = await pb.User.AuthenticateWithPassword(this.identity, this.password);
 
         var userCredentials = new { identity = this.identity, password = this.password };
+
+
         var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", userCredentials);
 
         if (response.IsSuccessStatusCode)
