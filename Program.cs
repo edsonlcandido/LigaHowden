@@ -1,5 +1,6 @@
 using LigaHowden.Data;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace LigaHowden
@@ -11,6 +12,7 @@ namespace LigaHowden
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddAuthenticationCore();
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<WeatherForecastService>();
@@ -23,7 +25,7 @@ namespace LigaHowden
                     // Aqui você pode adicionar cabeçalhos padrão, configurar o manipulador de mensagens, etc.
                 };
             });
-
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

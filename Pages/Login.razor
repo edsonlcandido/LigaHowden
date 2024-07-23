@@ -1,6 +1,7 @@
 @page "/login"
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using PocketBaseClient
 @using pocketbase_csharp_sdk
 
@@ -24,10 +25,14 @@
 </form>
 
 @code{
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
+
     //ao clickar no botão enviar os valores identity e password para a user https://api.ligas.edsonluizcandido.com.br//api/collections/users/auth-with-password usando o post
     //show a modal value 
     private string identity;
     private string password;
+
 
     private async Task SignIn()
     {
@@ -37,13 +42,15 @@
 
         var userCredentials = new { identity = this.identity, password = this.password };
 
-
         var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", userCredentials);
 
         if (response.IsSuccessStatusCode)
         {
+            var customAuthProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+            customAuthProvider.MarkUserAsAuthenticated(identity);
+
             // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
-            Navigation.NavigateTo("/pagina-de-sucesso");
+            Navigation.NavigateTo("/");            
         }
         else
         {

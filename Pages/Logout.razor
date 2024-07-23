@@ -1,0 +1,18 @@
+﻿@page "/logout"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var customAuthProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        customAuthProvider.MarkUserAsLoggedOut();
+        Navigation.NavigateTo("/");
+    }
+
+}
