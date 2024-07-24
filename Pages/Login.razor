@@ -1,9 +1,15 @@
 @page "/login"
 @inject HttpClient Http
 @inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthenticationStateProvider authStateProvider
+@inject ProtectedSessionStorage sessionStorage
+@inject IJSRuntime JSRuntime
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using PocketBaseClient
+@using System.Text.Json
 @using pocketbase_csharp_sdk
+@using System.Collections.Generic
 
 <h1>Login</h1>
 <form>
@@ -46,15 +52,26 @@
 
         if (response.IsSuccessStatusCode)
         {
-            var customAuthProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+            var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>(new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            //var authResponse = JsonSerializer.Deserialize<AuthResponse>();
+            var customAuthProvider = (CustomAuthenticationStateProvider)authStateProvider;
             await customAuthProvider.UpdateAuthenticationState(new UserSession()
             {
-                UserName = this.identity,
-                Role = "user"
+                Token = authResponse.Token,
+                UserName = authResponse.Record.Username,
+                Name = authResponse.Record.Name,
+                Role = "user",
+                Leagues = authResponse.Record.Leagues
             });
 
+            await sessionStorage.SetAsync("apiToken", response.ToJson());
+
             // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
-            Navigation.NavigateTo("/",true);            
+            Navigation.NavigateTo("/",true);        
+
         }
         else
         {
@@ -62,4 +79,19 @@
             Navigation.NavigateTo("/login", true);
         }
     }
+
+    public class Record
+    {
+        public string? Id { get; set; }
+        public List<string>? Leagues { get; set; }
+        public string? Name { get; set; }
+        public string? Username { get; set; }
+    }
+
+    public class AuthResponse
+    {
+        public Record? Record { get; set; }
+        public string? Token { get; set; }
+    }
+
 }

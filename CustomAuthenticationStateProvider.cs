@@ -23,7 +23,10 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userSession.UserName),
-                    new Claim(ClaimTypes.Role, userSession.Role)
+                    new Claim(ClaimTypes.Role, userSession.Role),
+                    new Claim("Token", userSession.Token),
+                    new Claim("Name", userSession.Name),
+                    new Claim("Leagues", string.Join(",", userSession.Leagues))
                 }, "CustomAuth"));
             return await Task.FromResult(new AuthenticationState(claimsPrincipal));
         }
@@ -33,7 +36,7 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
         }
     }
 
-    public async Task UpdateAuthenticationState(UserSession userSession)
+    public async Task UpdateAuthenticationState(UserSession? userSession)
     {
         ClaimsPrincipal claimsPrincipal;
 
