@@ -1,6 +1,7 @@
 using LigaHowden.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace LigaHowden
@@ -25,6 +26,7 @@ namespace LigaHowden
                     // Aqui você pode adicionar cabeçalhos padrão, configurar o manipulador de mensagens, etc.
                 };
             });
+            builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             var app = builder.Build();
 

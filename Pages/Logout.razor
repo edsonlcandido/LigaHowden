@@ -11,8 +11,7 @@
     {
         base.OnInitialized();
         var customAuthProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-        customAuthProvider.MarkUserAsLoggedOut();
+        //customAuthProvider.MarkUserAsLoggedOut();
         Navigation.NavigateTo("/");
     }
-
 }

@@ -30,15 +30,15 @@
 
     //ao clickar no botão enviar os valores identity e password para a user https://api.ligas.edsonluizcandido.com.br//api/collections/users/auth-with-password usando o post
     //show a modal value 
-    private string identity;
-    private string password;
+    private string identity ="";
+    private string password ="";
 
 
     private async Task SignIn()
     {
-        var pb = new PocketBase("https://api.ligas.edsonluizcandido.com.br");
+        //var pb = new PocketBase("https://api.ligas.edsonluizcandido.com.br");
 
-        var authData = await pb.User.AuthenticateWithPassword(this.identity, this.password);
+        // var authData = await pb.User.AuthenticateWithPassword(this.identity, this.password);
 
         var userCredentials = new { identity = this.identity, password = this.password };
 
@@ -47,15 +47,19 @@
         if (response.IsSuccessStatusCode)
         {
             var customAuthProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-            customAuthProvider.MarkUserAsAuthenticated(identity);
+            await customAuthProvider.UpdateAuthenticationState(new UserSession()
+            {
+                UserName = this.identity,
+                Role = "user"
+            });
 
             // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
-            Navigation.NavigateTo("/");            
+            Navigation.NavigateTo("/",true);            
         }
         else
         {
             // Mostrar uma mensagem de erro
-            Console.WriteLine("Erro ao fazer login. Por favor, tente novamente.");
+            Navigation.NavigateTo("/login", true);
         }
     }
 }

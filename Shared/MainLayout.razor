@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
 
 <PageTitle>Liga Howden</PageTitle>
 
@@ -11,7 +13,7 @@
         <div class="top-row px-4">
             <AuthorizeView>
                 <Authorized>
-                    <a class="nav-link" href="logout">Logout</a>
+                    <a class="nav-link" href="javascript:void(0)" @onclick="Logout">Logout</a>
                 </Authorized>
                 <NotAuthorized>
                     <NavLink class="nav-link" href="login">Login</NavLink>
@@ -24,3 +26,12 @@
         </article>
     </main>
 </div>
+
+@code{
+    private async Task Logout()
+    {
+        var customAuthProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        await customAuthProvider.UpdateAuthenticationState(null);
+        Navigation.NavigateTo("/");
+    }
+}
