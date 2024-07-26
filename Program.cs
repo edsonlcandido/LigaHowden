@@ -28,6 +28,7 @@ namespace LigaHowden
             });
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+            builder.Services.AddScoped<LeagueService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

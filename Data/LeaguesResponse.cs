@@ -1,4 +1,7 @@
-﻿namespace LigaHowden.Data
+﻿using Microsoft.AspNetCore.Mvc;
+using LigaHowden.Extensions;
+
+namespace LigaHowden.Data
 {
     public class LeaguesResponse
     {
@@ -20,6 +23,16 @@
         public LeaguesResponse GetLeaguesResponse()
         {
             return new LeaguesResponse();
+        }
+
+        public async Task<League> CreateLeague(LeagueCreateRequest leagueCreateRequest)
+        {
+            await Task.Delay(1000);
+            return new League { 
+                Id = "5", 
+                Name = leagueCreateRequest.Name, 
+                Slug = leagueCreateRequest.Name.Slugify() 
+            };
         }
     }
 
