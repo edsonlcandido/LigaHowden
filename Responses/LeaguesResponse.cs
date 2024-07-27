@@ -15,6 +15,5 @@ namespace LigaHowden.Responses
 
         }
         public List<League> Leagues { get; set; }
-
     }
 }

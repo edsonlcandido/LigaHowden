@@ -4,12 +4,14 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject ProtectedSessionStorage sessionStorage
 @inject IJSRuntime JSRuntime
+@inject AuthService authService
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using PocketBaseClient
 @using System.Text.Json
 @using pocketbase_csharp_sdk
 @using System.Collections.Generic
+@using LigaHowden.Services
 
 <h1>Login</h1>
 <form>
@@ -26,7 +28,7 @@
   </div>
 
   <!-- Submit button -->
-    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4" @onclick="SignIn">Sign in</button>
+    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4" @onclick="SignIn">Login</button>
 
 </form>
 
@@ -45,29 +47,33 @@
         //var pb = new PocketBase("https://api.ligas.edsonluizcandido.com.br");
 
         // var authData = await pb.User.AuthenticateWithPassword(this.identity, this.password);
-
-        var userCredentials = new { identity = this.identity, password = this.password };
-
-        var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", userCredentials);
-
-        if (response.IsSuccessStatusCode)
+        LoginRequest loginRequest = new LoginRequest
         {
-            var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>(new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            Identity = this.identity,
+            Password = this.password
+        };
+
+        //var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", loginRequest);
+        var loginResponse = await authService.Login(loginRequest);
+
+        if (loginResponse.Token != "")
+        {
+            // var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>(new JsonSerializerOptions
+            // {
+            //     PropertyNameCaseInsensitive = true
+            // });
             //var authResponse = JsonSerializer.Deserialize<AuthResponse>();
             var customAuthProvider = (CustomAuthenticationStateProvider)authStateProvider;
             await customAuthProvider.UpdateAuthenticationState(new UserSession()
             {
-                Token = authResponse.Token,
-                UserName = authResponse.Record.Username,
-                Name = authResponse.Record.Name,
-                Role = "user",
-                Leagues = authResponse.Record.Leagues
+                    Token = loginResponse.Token,
+                    UserName = loginResponse.User.Username,
+                    Name = loginResponse.User.Name,
+                    Role = "user",
+                    Leagues = loginResponse.User.Leagues
             });
 
-            await sessionStorage.SetAsync("apiToken", response.ToJson());
+            await sessionStorage.SetAsync("apiToken", loginResponse.Token);
 
             // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
             Navigation.NavigateTo("/",true);        
