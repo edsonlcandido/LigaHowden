@@ -1,4 +1,4 @@
-using LigaHowden.Data;
+using LigaHowden.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;

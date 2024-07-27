@@ -1,4 +1,6 @@
-namespace LigaHowden.Data
+using LigaHowden.Data;
+
+namespace LigaHowden.Services
 {
     public class WeatherForecastService
     {

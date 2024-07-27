@@ -1,7 +1,7 @@
 ﻿@page "/leagues/add"
 @inject NavigationManager Navigation
 @inject LeagueService leaguesService
-@using LigaHowden.Data
+@    using LigaHowden.Data
 
 
 <div class="row mt-4">
@@ -10,32 +10,35 @@
     </div>
 </div>
 <div class="row">
-    <form>
+    <EditForm Model="@this" OnValidSubmit="CreateLeague">
         <div class="mb-3">
             <label for="InputName" class="form-label">Nome da Liga</label>
-            <input type="text" class="form-control" id="InputName" @bind="leagueName">
+            <input type="text" class="form-control" id="InputName" @bind="Nome">
         </div>
-        <button type="submit" class="btn btn-primary" @onclick="CreateLeague">Criar</button>
-    </form>
+        <button type="submit" class="btn btn-primary">Criar</button>
+    </EditForm>
 </div>
 
 
-@code{
-    string leagueName;
-
-    //load leagues from the server after page is loaded
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
+@code {
+    public string? Nome { get; set; }
 
     private async Task CreateLeague()
     {
-        LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest()
+        try
         {
-            Name = this.leagueName    
-        };
-        var league = await leaguesService.CreateLeague(leagueCreateRequest);
-        Navigation.NavigateTo("/leagues", true);
+            LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest
+            {
+                Name = this.Nome
+            };
+
+            var league = await leaguesService.CreateLeague(leagueCreateRequest);
+            Navigation.NavigateTo("/leagues", true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }
+
