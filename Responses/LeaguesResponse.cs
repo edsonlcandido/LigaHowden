@@ -1,4 +1,4 @@
-﻿using LigaHowden.Data;
+﻿using LigaHowden.Data.DomainModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LigaHowden.Responses

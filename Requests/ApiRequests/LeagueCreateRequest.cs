@@ -1,4 +1,4 @@
-﻿namespace LigaHowden.Requests
+﻿namespace LigaHowden.Requests.ApiRequests
 {
     public class LeagueCreateRequest
     {

@@ -1,10 +1,14 @@
-﻿using LigaHowden.Data;
+﻿using LigaHowden.Data.ApiModels;
+using LigaHowden.Data.DomainModels;
+using System.Text.Json.Serialization;
 
 namespace LigaHowden.Responses
 {
     public class AuthResponse
     {
-        public string Token { get; set; } = string.Empty;
-        public Record Record { get; set; } = new Record();
+        [JsonPropertyName("record")]
+        public Auth? Auth { get; set; }
+        [JsonPropertyName("token")]
+        public string? Token { get; set; }
     }
 }

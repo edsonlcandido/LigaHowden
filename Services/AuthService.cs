@@ -1,5 +1,6 @@
 ﻿using LigaHowden.Data;
-using LigaHowden.Requests;
+using LigaHowden.Data.DomainModels;
+using LigaHowden.Requests.ApiRequests;
 using LigaHowden.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -30,10 +31,10 @@ namespace LigaHowden.Services
                     Token = authResponse.Token,
                     User = new User
                     {
-                        Id = authResponse.Record.Id,
-                        Username = authResponse.Record.Username,
-                        Name = authResponse.Record.Name,
-                        Leagues = authResponse.Record.Leagues
+                        Id = authResponse.Auth.Id,
+                        Username = authResponse.Auth.Username,
+                        Name = authResponse.Auth.Name,
+                        Leagues = authResponse.Auth.Leagues
                     }
                 };                
             }

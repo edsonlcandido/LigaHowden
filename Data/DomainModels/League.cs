@@ -1,4 +1,4 @@
-﻿namespace LigaHowden.Data
+﻿namespace LigaHowden.Data.DomainModels
 {
     public class League
     {

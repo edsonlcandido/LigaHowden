@@ -6,9 +6,11 @@
 @inject IJSRuntime JSRuntime
 @inject AuthService authService
 
+@using LigaHowden.Requests.ApiRequests
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using PocketBaseClient
 @using System.Text.Json
+@using System.Text.Json.Serialization
 @using pocketbase_csharp_sdk
 @using System.Collections.Generic
 @using LigaHowden.Services
@@ -76,8 +78,7 @@
             await sessionStorage.SetAsync("apiToken", loginResponse.Token);
 
             // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
-            Navigation.NavigateTo("/",true);        
-
+            Navigation.NavigateTo("/",true);
         }
         else
         {
@@ -85,19 +86,4 @@
             Navigation.NavigateTo("/login", true);
         }
     }
-
-    public class Record
-    {
-        public string? Id { get; set; }
-        public List<string>? Leagues { get; set; }
-        public string? Name { get; set; }
-        public string? Username { get; set; }
-    }
-
-    public class AuthResponse
-    {
-        public Record? Record { get; set; }
-        public string? Token { get; set; }
-    }
-
 }

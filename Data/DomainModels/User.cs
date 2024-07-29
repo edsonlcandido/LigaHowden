@@ -1,6 +1,6 @@
-﻿namespace LigaHowden.Data
+﻿namespace LigaHowden.Data.DomainModels
 {
-    public class Record
+    public class User
     {
         public string Id { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;

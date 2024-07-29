@@ -1,10 +1,11 @@
 ﻿@page "/leagues"
+@using LigaHowden.Data.DomainModels
+@using System.Text.Json
 @using LigaHowden.Data
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using System.Text.Json
 @using static System.Net.WebRequestMethods
-@inject ProtectedSessionStorage sessionStorage
-@inject HttpClient _http
+@inject LigaHowden.Services.LeagueService leagueService
 
 
 <div class="row mt-4">
@@ -42,18 +43,15 @@
     //load leagues from the server after page is loaded
     protected override async Task OnInitializedAsync()
     {
-        LeagueService leaguesService = new();
-        var token = await sessionStorage.GetAsync<string>("apiToken");
-        _http.DefaultRequestHeaders.Add("Authorization", token.Value);
-        var response = await _http.GetAsync("/api/collections/leagues/records");
-        var content = await response.Content.ReadAsStringAsync();
-        var leaguesResponse = JsonSerializer.Deserialize<LeaguesPocketBaseResponse>(content);
-        leagues = leaguesResponse.Items.Select(Item => new League()
-            {
-                Id = Item.Id,
-                Name = Item.Name,
-                Slug = Item.Slug
-            }).ToList();
+        // LeagueService leaguesService = new LeagueService();
+        // var token = await sessionStorage.GetAsync<string>("apiToken");
+        // _http.DefaultRequestHeaders.Add("Authorization", token.Value);
+        // var response = await _http.GetAsync("/api/collections/leagues/records");
+        // var content = await response.Content.ReadAsStringAsync();
+        // var leaguesResponse = JsonSerializer.Deserialize<LeaguesPocketBaseResponse>(content);
+        //LeagueService leagueService = new LeagueService();
+
+        leagues = await leagueService.GetLeaguesResponse();
 
         //this.leagues = leaguesService.GetLeaguesResponse().Leagues;
     }
