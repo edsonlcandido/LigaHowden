@@ -64,6 +64,8 @@ namespace LigaHowden
                 LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest { Name = "Liga Rai ni quem?", Owner = user.Id };
                 leagueCreateRequest.Slug = leagueCreateRequest.Name.Slugify();
                 var newLeague = await leagueService.CreateLeague(leagueCreateRequest);
+                var deleteLeate = await leagueService.DeleteLeague(newLeague.Id);
+                var leagues = await leagueService.GetLeaguesList();
             }
             await app.RunAsync();
         }

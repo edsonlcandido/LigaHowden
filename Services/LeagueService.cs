@@ -25,11 +25,11 @@ namespace LigaHowden.Services
         public async Task<List<League>> GetLeaguesList()
         {            
             //_httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
-            if (_httpClient.DefaultRequestHeaders.Authorization == null)
-            {
-                var token = await _sessionStorage.GetAsync<string>("apiToken");
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.Value);
-            }
+            //if (_httpClient.DefaultRequestHeaders.Authorization == null)
+            //{
+            //    var token = await _sessionStorage.GetAsync<string>("apiToken");
+            //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.Value);
+            //}
 
             var response = await _httpClient.GetAsync("/api/collections/leagues/records");
 
@@ -63,6 +63,17 @@ namespace LigaHowden.Services
                 Name = leagueResponse.Name,
                 Slug = leagueResponse.Slug
             };
+        }
+
+        internal async Task<string> DeleteLeague(string id)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/collections/leagues/records/{id}");
+            if (response.Content == null)
+            {
+                return "liga delatada";
+            }
+            return "liga não deletada";
+
         }
     }
 }
