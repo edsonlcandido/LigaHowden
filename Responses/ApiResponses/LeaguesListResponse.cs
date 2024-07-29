@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LigaHowden.Responses
+namespace LigaHowden.Responses.ApiResponses
 {
-    public class LeaguesPocketBaseResponse
+    public class LeaguesListResponse
     {
         [JsonPropertyName("items")]
         public List<Item> Items { get; set; }

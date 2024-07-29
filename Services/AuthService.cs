@@ -1,8 +1,10 @@
 ﻿using LigaHowden.Data;
 using LigaHowden.Data.DomainModels;
 using LigaHowden.Requests.ApiRequests;
-using LigaHowden.Responses;
+using LigaHowden.Responses.ApiResponses;
+using LigaHowden.Responses.DomainResponses;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace LigaHowden.Services
@@ -25,6 +27,8 @@ namespace LigaHowden.Services
                 {
                     PropertyNameCaseInsensitive = true
                 });
+
+                _http.DefaultRequestHeaders.Add("Authorization", authResponse.Token);
 
                 return new LoginResponse
                 {

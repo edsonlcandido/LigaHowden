@@ -51,8 +51,17 @@
         // var leaguesResponse = JsonSerializer.Deserialize<LeaguesPocketBaseResponse>(content);
         //LeagueService leagueService = new LeagueService();
 
-        leagues = await leagueService.GetLeaguesResponse();
+
+
+        leagues = await leagueService.GetLeaguesList();
+
 
         //this.leagues = leaguesService.GetLeaguesResponse().Leagues;
     }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        leagues = await leagueService.GetLeaguesList();
+    }
+
 }

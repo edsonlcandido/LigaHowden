@@ -1,11 +1,13 @@
 ﻿using LigaHowden.Data.DomainModels;
 using LigaHowden.Extensions;
 using LigaHowden.Requests.ApiRequests;
-using LigaHowden.Responses;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.WebRequestMethods;
 using System.Text.Json;
+using LigaHowden.Responses.ApiResponses;
+using LigaHowden.Responses.DomainResponses;
+using System.Net.Http.Headers;
 
 namespace LigaHowden.Services
 {
@@ -21,13 +23,19 @@ namespace LigaHowden.Services
             _sessionStorage = sessionStorage;
             _httpClient = httpClient;
         }
-        public async Task<List<League>> GetLeaguesResponse()
-        {
-            var token = await _sessionStorage.GetAsync<string>("apiToken");
-            _httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
+        public async Task<List<League>> GetLeaguesList()
+        {            
+            //_httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
+            if (_httpClient.DefaultRequestHeaders.Authorization == null)
+            {
+                var token = await _sessionStorage.GetAsync<string>("apiToken");
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.Value);
+            }
+
             var response = await _httpClient.GetAsync("/api/collections/leagues/records");
+
             var content = await response.Content.ReadAsStringAsync();
-            var leaguesResponse = JsonSerializer.Deserialize<LeaguesPocketBaseResponse>(content);
+            var leaguesResponse = JsonSerializer.Deserialize<LeaguesListResponse>(content);
             var leagues = leaguesResponse.Items.Select(Item => new League()
             {
                 Id = Item.Id,

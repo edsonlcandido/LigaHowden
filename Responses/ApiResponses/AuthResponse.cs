@@ -2,7 +2,7 @@
 using LigaHowden.Data.DomainModels;
 using System.Text.Json.Serialization;
 
-namespace LigaHowden.Responses
+namespace LigaHowden.Responses.ApiResponses
 {
     public class AuthResponse
     {

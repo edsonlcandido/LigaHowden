@@ -1,6 +1,6 @@
 ﻿using LigaHowden.Data.DomainModels;
 
-namespace LigaHowden.Responses
+namespace LigaHowden.Responses.DomainResponses
 {
     public class LoginResponse
     {

@@ -1,7 +1,7 @@
 ﻿using LigaHowden.Data.DomainModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LigaHowden.Responses
+namespace LigaHowden.Responses.DomainResponses
 {
     public class LeaguesResponse
     {

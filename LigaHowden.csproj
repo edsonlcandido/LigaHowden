@@ -14,8 +14,6 @@
 
   <ItemGroup>
     <Folder Include="Requests\DomainRequests\" />
-    <Folder Include="Responses\ApiResponses\" />
-    <Folder Include="Responses\DomainResponses\" />
   </ItemGroup>
 
 </Project>
