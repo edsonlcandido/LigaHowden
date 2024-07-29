@@ -14,7 +14,6 @@ namespace LigaHowden.Services
     public class LeagueService
     {
         private readonly ProtectedSessionStorage _sessionStorage;
-
         private readonly HttpClient _httpClient;
 
         public LeagueService([FromServices]ProtectedSessionStorage sessionStorage,
@@ -47,12 +46,22 @@ namespace LigaHowden.Services
 
         public async Task<League> CreateLeague(LeagueCreateRequest leagueCreateRequest)
         {
-            await Task.Delay(1000);
-            return new League
+            //_httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
+            //if (_httpClient.DefaultRequestHeaders.Authorization == null)
+            //{
+            //    var token = await _sessionStorage.GetAsync<string>("apiToken");
+            //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.Value);
+            //}
+
+            var response = await _httpClient.PostAsJsonAsync("/api/collections/leagues/records", leagueCreateRequest);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var leagueResponse = JsonSerializer.Deserialize<LeagueCreateResponse>(content);
+            return new League()
             {
-                Id = "5",
-                Name = leagueCreateRequest.Name,
-                Slug = leagueCreateRequest.Name.Slugify()
+                Id = leagueResponse.Id,
+                Name = leagueResponse.Name,
+                Slug = leagueResponse.Slug
             };
         }
     }

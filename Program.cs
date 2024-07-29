@@ -1,3 +1,6 @@
+using LigaHowden.Extensions;
+using LigaHowden.Requests.ApiRequests;
+using LigaHowden.Responses.DomainResponses;
 using LigaHowden.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -8,7 +11,7 @@ namespace LigaHowden
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,7 @@ namespace LigaHowden
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<WeatherForecastService>();
-            builder.Services.AddScoped<HttpClient>(sp =>
+            builder.Services.AddScoped(sp =>
             {
                 // Configure o HttpClient conforme necessário
                 return new HttpClient
@@ -30,6 +33,7 @@ namespace LigaHowden
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddScoped<LeagueService>();
             builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<UserServices>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -49,7 +53,19 @@ namespace LigaHowden
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
 
-            app.Run();
+            //Criar um metodo no league service para adicionar uma liga
+            using (var scope = app.Services.CreateScope())
+            {
+                var scopeServices = scope.ServiceProvider;
+                var leagueService = scopeServices.GetRequiredService<LeagueService>();
+                var auth = scopeServices.GetRequiredService<AuthService>();
+                LoginResponse loginResponse =  await auth.Login(new LoginRequest { Identity = "edinho", Password = "12qw!@QW" });
+                var user = await auth.User();
+                LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest { Name = "Liga Rai ni quem?", Owner = user.Id };
+                leagueCreateRequest.Slug = leagueCreateRequest.Name.Slugify();
+                var newLeague = await leagueService.CreateLeague(leagueCreateRequest);
+            }
+            await app.RunAsync();
         }
     }
 }

@@ -12,8 +12,9 @@ namespace LigaHowden.Services
     public class AuthService
     {
         private readonly HttpClient _http;
+        private User user { get; set; }
 
-        public AuthService([FromServices]HttpClient Http) 
+        public AuthService([FromServices] HttpClient Http)
         {
             _http = Http;
         }
@@ -30,19 +31,26 @@ namespace LigaHowden.Services
 
                 _http.DefaultRequestHeaders.Add("Authorization", authResponse.Token);
 
+                user = new User
+                {
+                    Id = authResponse.Auth.Id,
+                    Username = authResponse.Auth.Username,
+                    Name = authResponse.Auth.Name,
+                    Leagues = authResponse.Auth.Leagues
+                };
+
                 return new LoginResponse
                 {
                     Token = authResponse.Token,
-                    User = new User
-                    {
-                        Id = authResponse.Auth.Id,
-                        Username = authResponse.Auth.Username,
-                        Name = authResponse.Auth.Name,
-                        Leagues = authResponse.Auth.Leagues
-                    }
-                };                
+                    User = user
+                };
             }
             throw new Exception(response.ReasonPhrase);
+        }
+
+        public async Task<User> User()
+        {
+            return user;
         }
     }
 }

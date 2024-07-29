@@ -12,7 +12,6 @@ namespace LigaHowden.Responses.DomainResponses
             Leagues.Add(new League { Id = "2", Name = "MLS", Slug = "mls" });
             Leagues.Add(new League { Id = "3", Name = "Premier League", Slug = "premier-league" });
             Leagues.Add(new League { Id = "4", Name = "La Liga", Slug = "la-liga" });
-
         }
         public List<League> Leagues { get; set; }
     }
