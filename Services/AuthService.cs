@@ -6,6 +6,7 @@ using LigaHowden.Responses.DomainResponses;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using static System.Net.WebRequestMethods;
 
 namespace LigaHowden.Services
 {
@@ -13,6 +14,8 @@ namespace LigaHowden.Services
     {
         private readonly HttpClient _http;
         private User user { get; set; }
+
+        private string token { get; set; }
 
         public AuthService([FromServices] HttpClient Http)
         {
@@ -29,7 +32,7 @@ namespace LigaHowden.Services
                     PropertyNameCaseInsensitive = true
                 });
 
-                _http.DefaultRequestHeaders.Add("Authorization", authResponse.Token);
+                _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(authResponse.Token);
 
                 user = new User
                 {
@@ -38,6 +41,8 @@ namespace LigaHowden.Services
                     Name = authResponse.Auth.Name,
                     Leagues = authResponse.Auth.Leagues
                 };
+
+                token = authResponse.Token;
 
                 return new LoginResponse
                 {
@@ -51,6 +56,11 @@ namespace LigaHowden.Services
         public async Task<User> User()
         {
             return user;
+        }
+
+        public async Task<string> Token()
+        {
+            return token;
         }
     }
 }

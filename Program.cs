@@ -54,19 +54,20 @@ namespace LigaHowden
             app.MapFallbackToPage("/_Host");
 
             //Criar um metodo no league service para adicionar uma liga
-            using (var scope = app.Services.CreateScope())
-            {
-                var scopeServices = scope.ServiceProvider;
-                var leagueService = scopeServices.GetRequiredService<LeagueService>();
-                var auth = scopeServices.GetRequiredService<AuthService>();
-                LoginResponse loginResponse =  await auth.Login(new LoginRequest { Identity = "edinho", Password = "12qw!@QW" });
-                var user = await auth.User();
-                LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest { Name = "Liga Rai ni quem?", Owner = user.Id };
-                leagueCreateRequest.Slug = leagueCreateRequest.Name.Slugify();
-                var newLeague = await leagueService.CreateLeague(leagueCreateRequest);
-                var deleteLeate = await leagueService.DeleteLeague(newLeague.Id);
-                var leagues = await leagueService.GetLeaguesList();
-            }
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var scopeServices = scope.ServiceProvider;
+            //    var leagueService = scopeServices.GetRequiredService<LeagueService>();
+            //    var auth = scopeServices.GetRequiredService<AuthService>();
+            //    LoginResponse loginResponse =  await auth.Login(new LoginRequest { Identity = "edinho", Password = "12qw!@QW" });
+            //    var user = await auth.User();
+            //    LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest { Name = "Liga Rai ni quem?", Owner = user.Id };
+            //    leagueCreateRequest.Slug = leagueCreateRequest.Name.Slugify();
+            //    var newLeague = await leagueService.CreateLeague(leagueCreateRequest);
+            //    var deleteLeate = await leagueService.DeleteLeague(newLeague.Id);
+            //    var leagues = await leagueService.GetLeaguesList();
+            //}
+
             await app.RunAsync();
         }
     }

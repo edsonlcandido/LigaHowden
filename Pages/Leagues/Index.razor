@@ -6,6 +6,8 @@
 @using System.Text.Json
 @using static System.Net.WebRequestMethods
 @inject LigaHowden.Services.LeagueService leagueService
+@inject HttpClient _http
+@inject ProtectedSessionStorage sessionStorage
 
 
 <div class="row mt-4">
@@ -28,8 +30,8 @@
                 <td>@l.Slug</td>
                 <td>
                     <NavLink href="@($"/leagues/{l.Slug}")">ver</NavLink>
-                    <NavLink href="@($"/leagues/admin/{l.Slug}")">admin</NavLink>
-                    <NavLink href="@($"/leagues/delete/{l.Slug}")">deletar</NavLink>
+                    <NavLink href="@($"/leagues/admin/{l.Id}")">admin</NavLink>
+                    <NavLink href="@($"/leagues/delete/{l.Id}")">deletar</NavLink>
                 </td>
             </tr>
         }
@@ -44,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         // LeagueService leaguesService = new LeagueService();
-        // var token = await sessionStorage.GetAsync<string>("apiToken");
+        //var token = await sessionStorage.GetAsync<string>("apiToken");
         // _http.DefaultRequestHeaders.Add("Authorization", token.Value);
         // var response = await _http.GetAsync("/api/collections/leagues/records");
         // var content = await response.Content.ReadAsStringAsync();
@@ -53,10 +55,19 @@
 
 
 
-        leagues = await leagueService.GetLeaguesList();
+        //leagues = await leagueService.GetLeaguesList();
 
 
         //this.leagues = leaguesService.GetLeaguesResponse().Leagues;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            leagues = await leagueService.GetLeaguesList();
+            StateHasChanged();
+        }
     }
 
     protected override async Task OnParametersSetAsync()

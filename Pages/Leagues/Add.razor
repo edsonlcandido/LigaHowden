@@ -1,9 +1,12 @@
 ﻿@page "/leagues/add"
 @inject NavigationManager Navigation
 @inject LeagueService leaguesService
+@inject AuthenticationStateProvider authStateProvider
+@inject ProtectedSessionStorage sessionStorage
 @using LigaHowden.Data
 @using LigaHowden.Requests;
 @using LigaHowden.Requests.ApiRequests
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 
 <div class="row mt-4">
     <div class="d-flex align-items-center">
@@ -28,10 +31,18 @@
     {
         try
         {
+            var customAuthProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var token = await sessionStorage.GetAsync<string>("apiToken");
+            var session = await sessionStorage.GetAsync<UserSession>("UserSession");
+            var userId = session.Value.Id;
+
             LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest
-            {
-                Name = this.Nome
-            };
+                {
+                    Name = this.Nome,
+                    Owner = userId
+                };
+            leagueCreateRequest.Slug = leagueCreateRequest.Name.Slugify();
+            var newLeague = await leaguesService.CreateLeague(leagueCreateRequest);
 
             var league = await leaguesService.CreateLeague(leagueCreateRequest);
             Navigation.NavigateTo("/leagues", true);

@@ -68,6 +68,7 @@
             var customAuthProvider = (CustomAuthenticationStateProvider)authStateProvider;
             await customAuthProvider.UpdateAuthenticationState(new UserSession()
             {
+                    Id = loginResponse.User.Id,
                     Token = loginResponse.Token,
                     UserName = loginResponse.User.Username,
                     Name = loginResponse.User.Name,

@@ -15,21 +15,25 @@ namespace LigaHowden.Services
     {
         private readonly ProtectedSessionStorage _sessionStorage;
         private readonly HttpClient _httpClient;
+        private readonly AuthService _authService;
 
         public LeagueService([FromServices]ProtectedSessionStorage sessionStorage,
-            [FromServices]HttpClient httpClient)
+            [FromServices]HttpClient httpClient,
+            [FromServices]AuthService authService)
         {
             _sessionStorage = sessionStorage;
             _httpClient = httpClient;
+            _authService = authService;
         }
         public async Task<List<League>> GetLeaguesList()
-        {            
+        {
             //_httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
-            //if (_httpClient.DefaultRequestHeaders.Authorization == null)
-            //{
-            //    var token = await _sessionStorage.GetAsync<string>("apiToken");
-            //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.Value);
-            //}
+            if (_httpClient.DefaultRequestHeaders.Authorization == null)
+            {
+                //var token = await _sessionStorage.GetAsync<string>("apiToken");
+                var token = await _authService.Token();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
+            }
 
             var response = await _httpClient.GetAsync("/api/collections/leagues/records");
 
@@ -47,11 +51,13 @@ namespace LigaHowden.Services
         public async Task<League> CreateLeague(LeagueCreateRequest leagueCreateRequest)
         {
             //_httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
-            //if (_httpClient.DefaultRequestHeaders.Authorization == null)
-            //{
-            //    var token = await _sessionStorage.GetAsync<string>("apiToken");
-            //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.Value);
-            //}
+            if (_httpClient.DefaultRequestHeaders.Authorization == null)
+            {
+                //var token = await _sessionStorage.GetAsync<string>("apiToken");
+                var token = await _authService.Token();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
+            }
+
 
             var response = await _httpClient.PostAsJsonAsync("/api/collections/leagues/records", leagueCreateRequest);
 
