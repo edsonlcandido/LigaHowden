@@ -1,5 +1,5 @@
 @page "/login"
-@inject HttpClient Http
+@inject HttpClient _httpClient
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider authStateProvider
 @inject ProtectedSessionStorage sessionStorage
@@ -77,7 +77,10 @@
             });
 
             await sessionStorage.SetAsync("apiToken", loginResponse.Token);
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(loginResponse.Token);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(loginResponse.Token);
+
+            Console.WriteLine($"Login HttpClient InstanceId: {_httpClient.GetInstanceId()}");
 
             // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
             Navigation.NavigateTo("/",true);

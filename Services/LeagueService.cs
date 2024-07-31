@@ -27,15 +27,18 @@ namespace LigaHowden.Services
         }
         public async Task<List<League>> GetLeaguesList()
         {
+            Console.WriteLine($"GetLeaguesList HttpClient InstanceId: {_httpClient.GetInstanceId()}");
             //_httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
-            if (_httpClient.DefaultRequestHeaders.Authorization == null)
-            {
-                //var token = await _sessionStorage.GetAsync<string>("apiToken");
-                var token = await _authService.Token();
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
-            }
+            //if (_httpClient.DefaultRequestHeaders.Authorization == null)
+            //{
+            //    var token = await _sessionStorage.GetAsync<string>("apiToken");
+            //    var token = await _authService.Token();
+            //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
+            //}
 
             var response = await _httpClient.GetAsync("/api/collections/leagues/records");
+
+            
 
             var content = await response.Content.ReadAsStringAsync();
             var leaguesResponse = JsonSerializer.Deserialize<LeaguesListResponse>(content);
