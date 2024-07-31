@@ -15,13 +15,13 @@ namespace LigaHowden.Services
     public class AuthService
     {
         private readonly HttpClient _httpClient;
-        private User user { get; set; }
+        private User? user { get; set; }
 
-        private string token { get; set; }
+        private string? token { get; set; }
 
-        public AuthService([FromServices] HttpClient Http)
+        public AuthService([FromServices]IHttpClientFactory Http)
         {
-            _httpClient = Http;
+            _httpClient = Http.CreateClient("LigaHowdenClient");
         }
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {

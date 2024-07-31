@@ -1,5 +1,5 @@
 @page "/login"
-@inject HttpClient _httpClient
+@inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider authStateProvider
 @inject ProtectedSessionStorage sessionStorage
@@ -78,9 +78,11 @@
 
             await sessionStorage.SetAsync("apiToken", loginResponse.Token);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(loginResponse.Token);
+            //HttpClient _httpClient = HttpClientFactory.CreateClient("LigaHowdenClient");
 
-            Console.WriteLine($"Login HttpClient InstanceId: {_httpClient.GetInstanceId()}");
+            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(loginResponse.Token);
+
+            //Console.WriteLine($"Login HttpClient InstanceId: {_httpClient.GetInstanceId()}");
 
             // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
             Navigation.NavigateTo("/",true);

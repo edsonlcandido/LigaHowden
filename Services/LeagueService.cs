@@ -18,12 +18,13 @@ namespace LigaHowden.Services
         private readonly AuthService _authService;
 
         public LeagueService([FromServices]ProtectedSessionStorage sessionStorage,
-            [FromServices]HttpClient httpClient,
+            [FromServices]IHttpClientFactory httpClientFactory,
             [FromServices]AuthService authService)
         {
-            _sessionStorage = sessionStorage;
-            _httpClient = httpClient;
+            _sessionStorage = sessionStorage;            
             _authService = authService;
+            
+            _httpClient = httpClientFactory.CreateClient("LigaHowdenClient");
         }
         public async Task<List<League>> GetLeaguesList()
         {
@@ -37,8 +38,6 @@ namespace LigaHowden.Services
             //}
 
             var response = await _httpClient.GetAsync("/api/collections/leagues/records");
-
-            
 
             var content = await response.Content.ReadAsStringAsync();
             var leaguesResponse = JsonSerializer.Deserialize<LeaguesListResponse>(content);

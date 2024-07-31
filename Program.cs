@@ -11,7 +11,7 @@ namespace LigaHowden
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +23,6 @@ namespace LigaHowden
             builder.Services.AddHttpClient("LigaHowdenClient", client =>
             {
                 client.BaseAddress = new Uri("https://api.ligas.edsonluizcandido.com.br/");
-            });
-            builder.Services.AddScoped(sp =>
-            {
-                var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
-                return clientFactory.CreateClient("LigaHowdenClient");
             });
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
@@ -68,7 +63,7 @@ namespace LigaHowden
             //    var leagues = await leagueService.GetLeaguesList();
             //}
 
-            await app.RunAsync();
+            app.Run();
         }
     }
 }
