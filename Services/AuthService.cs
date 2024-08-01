@@ -14,12 +14,12 @@ namespace LigaHowden.Services
 {
     public class AuthService
     {
-        private readonly HttpClient _httpClient;
+        private HttpClient _httpClient;
         private User? user { get; set; }
 
         private string? token { get; set; }
 
-        public AuthService([FromServices]IHttpClientFactory Http)
+        public AuthService(IHttpClientFactory Http)
         {
             _httpClient = Http.CreateClient("LigaHowdenClient");
         }

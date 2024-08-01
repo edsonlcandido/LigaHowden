@@ -13,17 +13,16 @@ namespace LigaHowden.Services
 {
     public class LeagueService
     {
-        private readonly ProtectedSessionStorage _sessionStorage;
-        private readonly HttpClient _httpClient;
-        private readonly AuthService _authService;
+        private ProtectedSessionStorage _sessionStorage;
+        private HttpClient _httpClient;
+        private AuthService _authService;
 
-        public LeagueService([FromServices]ProtectedSessionStorage sessionStorage,
-            [FromServices]IHttpClientFactory httpClientFactory,
-            [FromServices]AuthService authService)
+        public LeagueService(ProtectedSessionStorage sessionStorage,
+            IHttpClientFactory httpClientFactory,
+            AuthService authService)
         {
             _sessionStorage = sessionStorage;            
-            _authService = authService;
-            
+            _authService = authService;            
             _httpClient = httpClientFactory.CreateClient("LigaHowdenClient");
         }
         public async Task<List<League>> GetLeaguesList()
@@ -53,12 +52,13 @@ namespace LigaHowden.Services
         public async Task<League> CreateLeague(LeagueCreateRequest leagueCreateRequest)
         {
             //_httpClient.DefaultRequestHeaders.Add("Authorization", token.Value);
-            if (_httpClient.DefaultRequestHeaders.Authorization == null)
-            {
-                //var token = await _sessionStorage.GetAsync<string>("apiToken");
-                var token = await _authService.Token();
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
-            }
+            //if (_httpClient.DefaultRequestHeaders.Authorization == null)
+            //{
+            //var token = await _sessionStorage.GetAsync<string>("apiToken");
+            //var token = await _authService.Token();
+            //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
+            //}
+            Console.WriteLine($"GetLeaguesList HttpClient InstanceId: {_httpClient.GetInstanceId()}");
 
 
             var response = await _httpClient.PostAsJsonAsync("/api/collections/leagues/records", leagueCreateRequest);
