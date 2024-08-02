@@ -15,15 +15,14 @@ namespace LigaHowden.Services
     {
         private ProtectedSessionStorage _sessionStorage;
         private HttpClient _httpClient;
-        private AuthService _authService;
+        private HttpRequestMessage requestMessage; 
+        private string token { get; set; }  = string.Empty;
 
         public LeagueService(ProtectedSessionStorage sessionStorage,
-            IHttpClientFactory httpClientFactory,
-            AuthService authService)
+            IHttpClientFactory httpClientFactory)
         {
             _sessionStorage = sessionStorage;            
-            _authService = authService;            
-            _httpClient = httpClientFactory.CreateClient("LigaHowdenClient");
+            _httpClient = httpClientFactory.CreateClient("LigaHowdenClient");            
         }
         public async Task<List<League>> GetLeaguesList()
         {
@@ -35,8 +34,17 @@ namespace LigaHowden.Services
             //    var token = await _authService.Token();
             //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
             //}
+            requestMessage = new HttpRequestMessage();
+            if (this.token =="")
+            {
+                var tokenResult = await _sessionStorage.GetAsync<string>("apiToken");
+                this.token = tokenResult.Value;
+            }            
+            requestMessage.Headers.Add("Authorization", token);
+            requestMessage.Method = HttpMethod.Get;
+            requestMessage.RequestUri = new Uri("/api/collections/leagues/records", UriKind.Relative);
 
-            var response = await _httpClient.GetAsync("/api/collections/leagues/records");
+            var response = await _httpClient.SendAsync(requestMessage);
 
             var content = await response.Content.ReadAsStringAsync();
             var leaguesResponse = JsonSerializer.Deserialize<LeaguesListResponse>(content);
@@ -58,10 +66,20 @@ namespace LigaHowden.Services
             //var token = await _authService.Token();
             //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
             //}
-            Console.WriteLine($"GetLeaguesList HttpClient InstanceId: {_httpClient.GetInstanceId()}");
+            Console.WriteLine($"CreateLeague HttpClient InstanceId: {_httpClient.GetInstanceId()}");
 
+            requestMessage = new HttpRequestMessage();
+            if (this.token == "")
+            {
+                var tokenResult = await _sessionStorage.GetAsync<string>("apiToken");
+                this.token = tokenResult.Value;
+            }
+            requestMessage.Headers.Add("Authorization", token);
+            requestMessage.Method = HttpMethod.Post;
+            requestMessage.RequestUri = new Uri("/api/collections/leagues/records", UriKind.Relative);
+            requestMessage.Content = JsonContent.Create(leagueCreateRequest);
 
-            var response = await _httpClient.PostAsJsonAsync("/api/collections/leagues/records", leagueCreateRequest);
+            var response = await _httpClient.SendAsync(requestMessage);
 
             var content = await response.Content.ReadAsStringAsync();
             var leagueResponse = JsonSerializer.Deserialize<LeagueCreateResponse>(content);
@@ -75,10 +93,20 @@ namespace LigaHowden.Services
 
         internal async Task<string> DeleteLeague(string id)
         {
-            var response = await _httpClient.DeleteAsync($"/api/collections/leagues/records/{id}");
+            requestMessage = new HttpRequestMessage();
+            if (this.token == "")
+            {
+                var tokenResult = await _sessionStorage.GetAsync<string>("apiToken");
+                this.token = tokenResult.Value;
+            }
+            requestMessage.Headers.Add("Authorization", token);
+            requestMessage.Method = HttpMethod.Delete;
+            requestMessage.RequestUri = new Uri($"/api/collections/leagues/records/{id}", UriKind.Relative);
+
+            var response = await _httpClient.SendAsync(requestMessage);
             if (response.Content == null)
             {
-                return "liga delatada";
+                return "liga deletada";
             }
             return "liga não deletada";
 

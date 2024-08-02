@@ -42,25 +42,6 @@
 @code {
     List<League>? leagues = new List<League>();
 
-    //load leagues from the server after page is loaded
-    protected override async Task OnInitializedAsync()
-    {
-        // LeagueService leaguesService = new LeagueService();
-        //var token = await sessionStorage.GetAsync<string>("apiToken");
-        // _http.DefaultRequestHeaders.Add("Authorization", token.Value);
-        // var response = await _http.GetAsync("/api/collections/leagues/records");
-        // var content = await response.Content.ReadAsStringAsync();
-        // var leaguesResponse = JsonSerializer.Deserialize<LeaguesPocketBaseResponse>(content);
-        //LeagueService leagueService = new LeagueService();
-
-
-
-        leagues = await leagueService.GetLeaguesList();
-
-
-        //this.leagues = leaguesService.GetLeaguesResponse().Leagues;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

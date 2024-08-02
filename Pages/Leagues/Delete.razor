@@ -2,6 +2,7 @@
 @inject NavigationManager Navigation
 @inject LeagueService leagueService
 
+
 @code {
     [Parameter]
     public string Id { get; set; }
@@ -9,7 +10,7 @@
     protected override async Task OnInitializedAsync()
     {
         var deleteLeate = await leagueService.DeleteLeague(Id);
-        if (deleteLeate == "liga delatada")
+        if (deleteLeate == "liga deletada")
         {
             Navigation.NavigateTo("/leagues", true);
         }
