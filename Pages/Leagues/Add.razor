@@ -7,6 +7,7 @@
 @using LigaHowden.Requests;
 @using LigaHowden.Requests.ApiRequests
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
 
 <div class="row mt-4">
     <div class="d-flex align-items-center">
@@ -35,16 +36,14 @@
             var token = await sessionStorage.GetAsync<string>("apiToken");
             var session = await sessionStorage.GetAsync<UserSession>("UserSession");
             var userId = session.Value.Id;
-
+            
             LeagueCreateRequest leagueCreateRequest = new LeagueCreateRequest
                 {
                     Name = this.Nome,
                     Owner = userId
                 };
             leagueCreateRequest.Slug = leagueCreateRequest.Name.Slugify();
-            var newLeague = await leaguesService.CreateLeague(leagueCreateRequest);
-
-            var league = await leaguesService.CreateLeague(leagueCreateRequest);
+            var newLeague = await leaguesService.CreateLeague(leagueCreateRequest, token.Value);
             Navigation.NavigateTo("/leagues", true);
         }
         catch (Exception ex)

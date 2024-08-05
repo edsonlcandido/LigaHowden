@@ -1,6 +1,7 @@
 ﻿@page "/leagues/delete/{id}"
 @inject NavigationManager Navigation
 @inject LeagueService leagueService
+@inject ProtectedSessionStorage sessionStorage
 
 
 @code {
@@ -9,9 +10,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var token = await sessionStorage.GetAsync<string>("apiToken");
         var deleteLeate = await leagueService.DeleteLeague(Id);
         if (deleteLeate == "liga deletada")
         {
+            Navigation.NavigateTo("/leagues", true);
+        }else{
             Navigation.NavigateTo("/leagues", true);
         }
         

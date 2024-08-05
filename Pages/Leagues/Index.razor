@@ -4,10 +4,11 @@
 @using LigaHowden.Data
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using System.Text.Json
-@using static System.Net.WebRequestMethods
+@using Microsoft.JSInterop
 @inject LigaHowden.Services.LeagueService leagueService
 @inject HttpClient _http
 @inject ProtectedSessionStorage sessionStorage
+
 
 
 <div class="row mt-4">
@@ -41,19 +42,24 @@
 
 @code {
     List<League>? leagues = new List<League>();
-
+    string apiToken = "";
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            leagues = await leagueService.GetLeaguesList();
+            if (apiToken == "")
+            {                
+                var token = await sessionStorage.GetAsync<string>("apiToken");
+                apiToken = token.Value;
+            }
+            leagues = await leagueService.GetLeaguesList(apiToken);
             StateHasChanged();
         }
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        leagues = await leagueService.GetLeaguesList();
+        //var token = await sessionStorage.GetAsync<string>("apiToken");
+        //leagues = await leagueService.GetLeaguesList(apiToken);
     }
-
 }
