@@ -170,5 +170,23 @@ namespace LigaHowden.Services
             return "liga não deletada";
 
         }
+        internal async Task<League> GetLeague(string id, string token)
+        {
+            requestMessage = new HttpRequestMessage();
+            requestMessage.Headers.Add("Authorization", token);
+            requestMessage.Method = HttpMethod.Get;
+            requestMessage.RequestUri = new Uri($"/api/collections/leagues/records/{id}", UriKind.Relative);
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            var content = await response.Content.ReadAsStringAsync();
+            var leagueResponse = JsonSerializer.Deserialize<LeaguesViewResponse>(content);
+            return new League()
+            {
+                Id = leagueResponse.Id,
+                Name = leagueResponse.Name,
+                Slug = leagueResponse.Slug
+            };
+        }
     }
 }

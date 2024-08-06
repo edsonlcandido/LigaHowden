@@ -1,0 +1,41 @@
+@page "/leagues/admin/{id}"
+@inject LeagueService leagueService
+@inject ProtectedSessionStorage sessionStorage
+
+<div class="row mt-4">
+    <div class="d-flex align-items-center">
+        <h1>@LeagueName</h1>
+    </div>
+</div>
+<div class="row">
+    <EditForm Model="@this" OnValidSubmit="SearchTeams">
+        <div class="mb-3">
+            <label for="SearchTeam" class="form-label">Pesquisar time</label>
+            <input type="text" class="form-control" id="SearchTeam" @bind="Nome">
+        </div>
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+    </EditForm>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    string apiToken =   "";
+    string LeagueName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (apiToken == "")
+        {                
+            var token = await sessionStorage.GetAsync<string>("apiToken");
+            apiToken = token.Value;
+        }
+        var league = await leagueService.GetLeague(Id, apiToken);
+        LeagueName = league.Name;
+    }
+
+    protected async Task SearchTeams()
+    {
+    }
+}
