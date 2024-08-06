@@ -1,0 +1,90 @@
+@page "/leagues/admin/{id}/teams"
+@attribute [Authorize]
+@inject LeagueService leagueService
+@inject ProtectedSessionStorage sessionStorage
+
+<div class="row mt-4">
+    <div class="d-flex align-items-center">
+        <h1>@LeagueName</h1>
+    </div>
+    <div><h2>Times</h2></div>
+    <div>
+        <NavLink href="@($"/leagues/admin/{Id}")">Opções</NavLink> - 
+        <NavLink href="@($"/leagues/admin/{Id}/teams")">Times</NavLink>
+    </div>
+</div>
+<div class="row">
+    <EditForm Model="@this" OnValidSubmit="SearchTeams">
+        <div class="mb-3">
+            <label for="SearchTeam" class="form-label">Pesquisar time</label>
+            <input type="text" class="form-control" id="SearchTeam" @bind="SearchTeam">
+        </div>
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+    </EditForm>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    string apiToken =   "";
+    string LeagueName = "";
+    string SearchTeam = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (apiToken == "")
+            {
+                var token = await sessionStorage.GetAsync<string>("apiToken");
+                apiToken = token.Value;
+            }
+            var league = await leagueService.GetLeague(Id, apiToken);
+            LeagueName = league.Name;
+            StateHasChanged();
+        }
+    }
+
+    protected async Task SearchTeams()
+    {
+        HttpClient httpClient = new HttpClient();
+        //httpClient.BaseAddress = new Uri("https://corsbypass-5jyi.onrender.com/https://api.cartola.globo.com");
+        HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
+        httpRequestMessage.Method = HttpMethod.Get;
+        httpRequestMessage.RequestUri = new Uri($"https://corsbypass-5jyi.onrender.com/https://api.cartola.globo.com/busca?q={SearchTeam}");
+
+
+        var response = await httpClient.GetAsync("https://corsbypass-5jyi.onrender.com/https://api.cartola.globo.com/busca?q=AVR");
+        //var response = await httpClient.SendAsync(httpRequestMessage);
+    //{
+    //         "url_escudo_svg": "https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_svg_225/escudo/38/23/15/00430e8852-88ba-4f8a-8f5a-04541e56e83820240412122315",
+    // "nome_cartola": "Arthur Reis",
+    // "slug": "avr",
+    // "url_escudo_png": "https://s2-cartola.glbimg.com/UoctwtrvVQhMFQKD0q3uqgeRN1s=/https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_svg_225/escudo/38/23/15/00430e8852-88ba-4f8a-8f5a-04541e56e83820240412122315",
+    // "nome": "AVR ",
+    // "foto_perfil": "https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/placeholder/perfil-v2.png",
+    // "descricao": null,
+    // "facebook_id": null,
+    // "time_id": 363133
+    // }
+        //transformar o response em um array de objetos
+        //var responseArray = await response.Content.ReadFromJsonAsync<object[]>();
+
+        // var responseArray = new[]
+        // {
+        //     new
+        //     {
+        //         url_escudo_svg = "https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_svg_225/escudo/38/23/15/00430e8852-88ba-4f8a-8f5a-04541e56e83820240412122315",
+        //         nome_cartola = "Arthur Reis",
+        //         slug = "avr",
+        //         url_escudo_png = "https://s2-cartola.glbimg.com/UoctwtrvVQhMFQKD0q3uqgeRN1s=/https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_svg_225/escudo/38/23/15/00430e8852-88ba-4f8a-8f5a-04541e56e83820240412122315",
+        //         nome = "AVR",
+        //         foto_perfil = "https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/placeholder/perfil-v2.png",
+        //         descricao = (string)null,
+        //         facebook_id = (string)null,
+        //         time_id = 363133
+        //     }
+        // };
+    }
+}

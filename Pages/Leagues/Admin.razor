@@ -1,20 +1,19 @@
 @page "/leagues/admin/{id}"
+@attribute [Authorize]
 @inject LeagueService leagueService
 @inject ProtectedSessionStorage sessionStorage
 
 <div class="row mt-4">
-    <div class="d-flex align-items-center">
-        <h1>@LeagueName</h1>
+    <div class="d-flex">
+        <h1>@LeagueName</h1> - <h2>Opções</h2>
+    </div>
+    <div>
+        <NavLink href="@($"/leagues/admin/{Id}")">Opções</NavLink> - 
+        <NavLink href="@($"/leagues/admin/{Id}/teams")">Times</NavLink>
     </div>
 </div>
 <div class="row">
-    <EditForm Model="@this" OnValidSubmit="SearchTeams">
-        <div class="mb-3">
-            <label for="SearchTeam" class="form-label">Pesquisar time</label>
-            <input type="text" class="form-control" id="SearchTeam" @bind="Nome">
-        </div>
-        <button type="submit" class="btn btn-primary">Pesquisar</button>
-    </EditForm>
+
 </div>
 
 
@@ -23,16 +22,21 @@
     public string Id { get; set; }
     string apiToken =   "";
     string LeagueName = "";
+    string SearchTeam = "";
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (apiToken == "")
-        {                
-            var token = await sessionStorage.GetAsync<string>("apiToken");
-            apiToken = token.Value;
+        if (firstRender)
+        {
+            if (apiToken == "")
+            {
+                var token = await sessionStorage.GetAsync<string>("apiToken");
+                apiToken = token.Value;
+            }
+            var league = await leagueService.GetLeague(Id, apiToken);
+            LeagueName = league.Name;
+            StateHasChanged();
         }
-        var league = await leagueService.GetLeague(Id, apiToken);
-        LeagueName = league.Name;
     }
 
     protected async Task SearchTeams()
