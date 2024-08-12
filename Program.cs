@@ -62,7 +62,6 @@ namespace LigaHowden
             //    var deleteLeate = await leagueService.DeleteLeague(newLeague.Id);
             //    var leagues = await leagueService.GetLeaguesList();
             //}
-
             app.Run();
         }
     }
