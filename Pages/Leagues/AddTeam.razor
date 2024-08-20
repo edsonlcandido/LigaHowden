@@ -49,14 +49,14 @@
     protected async Task SearchTeams()
     {
         HttpClient httpClient = new HttpClient();
-        //httpClient.BaseAddress = new Uri("https://corsbypass-5jyi.onrender.com/https://api.cartola.globo.com");
+        //httpClient.BaseAddress = new Uri("https://cors.ehtudo.app/https://api.cartola.globo.com/");
         HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Method = HttpMethod.Get;
-        httpRequestMessage.RequestUri = new Uri($"https://corsbypass-5jyi.onrender.com/https://api.cartola.globo.com/busca?q={SearchTeam}");
+        httpRequestMessage.RequestUri = new Uri($"https://cors.ehtudo.app/https://api.cartola.globo.com/busca?q={SearchTeam}");
 
 
-        var response = await httpClient.GetAsync("https://corsbypass-5jyi.onrender.com/https://api.cartola.globo.com/busca?q=AVR");
-        //var response = await httpClient.SendAsync(httpRequestMessage);
+        //var response = await httpClient.GetAsync("https://cors.ehtudo.app/https://api.cartola.globo.com/busca?q=C.R.%20HRoMeU");
+        var response = await httpClient.SendAsync(httpRequestMessage);
     //{
     //         "url_escudo_svg": "https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_svg_225/escudo/38/23/15/00430e8852-88ba-4f8a-8f5a-04541e56e83820240412122315",
     // "nome_cartola": "Arthur Reis",
