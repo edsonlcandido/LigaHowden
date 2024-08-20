@@ -56,7 +56,7 @@
                 var request = new HttpRequestMessage
                     {
                         Method = HttpMethod.Get,
-                        RequestUri = new Uri("https://api.cartola.globo.com/busca?q=C.R. HRoMeU"),                        
+                        RequestUri = new Uri("https://cors.ehtudo.app/https://api.cartola.globo.com/busca?q=C.R.%20HRoMeU"),                        
                     };
                 using (var response = await client.SendAsync(request))
                 {
