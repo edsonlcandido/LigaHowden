@@ -1,4 +1,6 @@
 @page "/leagues/admin/{id}/teams"
+@using LigaHowden.Data.ApiModels
+@using System.Text.Json
 @attribute [Authorize]
 @inject LeagueService leagueService
 @inject ProtectedSessionStorage sessionStorage
@@ -53,6 +55,7 @@
         HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
         httpRequestMessage.Method = HttpMethod.Get;
         httpRequestMessage.RequestUri = new Uri($"https://cors.ehtudo.app/https://api.cartola.globo.com/busca?q={SearchTeam}");
+        httpRequestMessage.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36");
 
 
         //var response = await httpClient.GetAsync("https://cors.ehtudo.app/https://api.cartola.globo.com/busca?q=C.R.%20HRoMeU");
@@ -69,8 +72,8 @@
     // "time_id": 363133
     // }
         //transformar o response em um array de objetos
-        //var responseArray = await response.Content.ReadFromJsonAsync<object[]>();
-
+        var content = await response.Content.ReadAsStringAsync();
+        var leaguesResponse = JsonSerializer.Deserialize<CartolaTeam[]>(content);
         // var responseArray = new[]
         // {
         //     new
@@ -87,4 +90,7 @@
         //     }
         // };
     }
+
 }
+
+
