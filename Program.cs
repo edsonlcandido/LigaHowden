@@ -41,10 +41,6 @@ namespace LigaHowden
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.ListenAnyIP(80); // Porta HTTP
-                options.ListenAnyIP(443, listenOptions => // Porta HTTPS
-                {
-                    listenOptions.UseHttps();
-                });
             });
 
             var app = builder.Build();
@@ -59,7 +55,7 @@ namespace LigaHowden
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
