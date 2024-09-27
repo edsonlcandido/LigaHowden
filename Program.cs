@@ -37,12 +37,6 @@ namespace LigaHowden
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddScoped<UserServices>();
 
-            // Configurar a porta HTTPS
-            builder.WebHost.ConfigureKestrel(options =>
-            {
-                options.ListenAnyIP(80); // Porta HTTP
-            });
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
