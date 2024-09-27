@@ -47,54 +47,67 @@
 
     private async Task SignIn()
     {
-        //var pb = new PocketBase("https://api.ligas.edsonluizcandido.com.br");
-
-        //var authData = await pb.User.AuthenticateWithPassword(this.identity, this.password);
-        LoginRequest loginRequest = new LoginRequest
+        try
         {
-            Identity = this.identity,
-            Password = this.password
-        };
+            //var pb = new PocketBase("https://api.ligas.edsonluizcandido.com.br");
 
-        //var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", loginRequest);
-        var loginResponse = await authService.Login(loginRequest);
+            //var authData = await pb.User.AuthenticateWithPassword(this.identity, this.password);
+            LoginRequest loginRequest = new LoginRequest
+                {
+                    Identity = this.identity,
+                    Password = this.password
+                };
 
-        if (loginResponse.Token != "")
-        {
-            // var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>(new JsonSerializerOptions
-            // {
-            //     PropertyNameCaseInsensitive = true
-            // });
-            //var authResponse = JsonSerializer.Deserialize<AuthResponse>();
-            var customAuthProvider = (CustomAuthenticationStateProvider)authStateProvider;
-            await customAuthProvider.UpdateAuthenticationState(new UserSession()
+            //var response = await Http.PostAsJsonAsync("/api/collections/users/auth-with-password", loginRequest);
+            logger.LogInformation("Enviando requisição de login...");
+            var loginResponse = await authService.Login(loginRequest);
+
+            if (loginResponse.Token != "")
             {
-                    Id = loginResponse.User.Id,
-                    Token = loginResponse.Token,
-                    UserName = loginResponse.User.Username,
-                    Name = loginResponse.User.Name,
-                    Role = "user",
-                    Leagues = loginResponse.User.Leagues
-            });
+                logger.LogInformation("Login bem-sucedido, atualizando estado de autenticação...");
+                // var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>(new JsonSerializerOptions
+                // {
+                //     PropertyNameCaseInsensitive = true
+                // });
+                //var authResponse = JsonSerializer.Deserialize<AuthResponse>();
+                var customAuthProvider = (CustomAuthenticationStateProvider)authStateProvider;
+                await customAuthProvider.UpdateAuthenticationState(new UserSession()
+                    {
+                        Id = loginResponse.User.Id,
+                        Token = loginResponse.Token,
+                        UserName = loginResponse.User.Username,
+                        Name = loginResponse.User.Name,
+                        Role = "user",
+                        Leagues = loginResponse.User.Leagues
+                    });
 
-            await sessionStorage.SetAsync("apiToken", loginResponse.Token);
+                await sessionStorage.SetAsync("apiToken", loginResponse.Token);
 
-            //envie uma mensagem para o console com a resposta da api quero q a messagem va para o info igual os infos do http resquest
-            logger.LogInformation($"Login Response: {loginResponse.Token}");
+                //envie uma mensagem para o console com a resposta da api quero q a messagem va para o info igual os infos do http resquest
+                logger.LogInformation($"Login Response: {loginResponse.Token}");
 
-            //HttpClient _httpClient = HttpClientFactory.CreateClient("LigaHowdenClient");
+                //HttpClient _httpClient = HttpClientFactory.CreateClient("LigaHowdenClient");
 
-            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(loginResponse.Token);
+                //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(loginResponse.Token);
 
-            //Console.WriteLine($"Login HttpClient InstanceId: {_httpClient.GetInstanceId()}");
+                //Console.WriteLine($"Login HttpClient InstanceId: {_httpClient.GetInstanceId()}");
 
-            // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
-            Navigation.NavigateTo("/",true);
+                // Aqui você pode redirecionar o usuário para outra página ou mostrar uma mensagem de sucesso
+                Navigation.NavigateTo("/", true);
+            }
+            else
+            {
+                // Mostrar uma mensagem de erro
+                logger.LogWarning("Falha no login: resposta inválida ou token vazio.");
+                Navigation.NavigateTo("/login", true);
+            }
         }
-        else
+        catch (Exception ex)
         {
             // Mostrar uma mensagem de erro
+            logger.LogError($"Erro durante o login: {ex.Message}");
             Navigation.NavigateTo("/login", true);
         }
+    
     }
 }
