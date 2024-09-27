@@ -5,6 +5,7 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject IJSRuntime JSRuntime
 @inject AuthService authService
+@inject ILogger<Login> logger
 
 @using LigaHowden.Requests.ApiRequests
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -77,6 +78,9 @@
             });
 
             await sessionStorage.SetAsync("apiToken", loginResponse.Token);
+
+            //envie uma mensagem para o console com a resposta da api quero q a messagem va para o info igual os infos do http resquest
+            logger.LogInformation($"Login Response: {loginResponse.Token}");
 
             //HttpClient _httpClient = HttpClientFactory.CreateClient("LigaHowdenClient");
 
